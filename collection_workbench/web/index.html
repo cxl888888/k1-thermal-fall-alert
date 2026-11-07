@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="workbench-token" content="__LOCAL_TOKEN__">
+  <title>热像采集与标注工作台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div><h1>热像采集与标注</h1><p>现场记录 · 离线复核</p></div>
+  <span class="local-tag">仅本机访问</span>
+</header>
+<nav class="tabs" aria-label="工作模式" role="tablist">
+  <button id="tab-capture" role="tab" aria-controls="capture-panel" aria-selected="false">现场采集</button>
+  <button id="tab-replay" role="tab" aria-controls="replay-panel" aria-selected="true">回放订正</button>
+  <button id="tab-events" role="tab" aria-controls="events-panel" aria-selected="false">事件预览</button>
+  <details class="scale-settings"><summary>温标设置</summary><div>
+    <label>最低温度 °C<input id="temp-min" type="number" value="18" step="1"></label>
+    <label>最高温度 °C<input id="temp-max" type="number" value="38" step="1"></label>
+    <p>固定显示温标；改变温标不修改原始温度。</p>
+  </div></details>
+</nav>
+<main>
+  <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+  <section id="capture-panel" role="tabpanel" aria-labelledby="tab-capture" hidden>
+    <div class="section-title"><h2>现场采集</h2><span id="capture-status" class="badge">未启动</span></div>
+    <p id="capture-availability" class="hint"></p>
+    <details id="capture-setup" class="setup" open>
+      <summary>本次采集信息</summary>
+      <form id="capture-form">
+        <div class="form-grid">
+          <label>采集计划<select name="recording_profile" id="recording-profile" aria-describedby="profile-description"></select></label>
+          <label>采集目的<select name="collection_purpose" id="collection-purpose"><option value="functional_trial">功能试采：先验证链路</option><option value="dataset_collection">数据集采集：记录完整条件</option><option value="device_check">设备检查：不采人体动作</option></select></label>
+          <label>本场动作来源<select name="activity_source" id="activity-source" aria-describedby="activity-source-note"><option value="everyday_only">仅日常动作</option><option value="everyday_and_controlled">日常动作＋受控模拟</option><option value="equipment_only">仅设备检查</option></select></label>
+          <label>数据集编号／名称（选填，可中文）<input name="dataset_name" placeholder="例如：小洛行走第1轮" maxlength="100"></label>
+          <label>场景代号（支持中文）<input name="scene" placeholder="例如：卧室靠窗区域" maxlength="100" required></label>
+          <label>参与者代号（支持中文）<input name="participant" placeholder="例如：志愿者甲；不填真实姓名" maxlength="80" required></label>
+          <label>标注员代号（选填，支持中文）<input name="annotator_id" placeholder="可留空，例如：标注员甲" maxlength="80"></label>
+          <label>最长采集时间（分钟）<input name="duration_minutes" type="number" value="10" min="0.167" max="120" step="any" required></label>
+          <label>安装配置代号（支持中文）<input name="installation_id" id="installation-id" placeholder="例如：桌面朝向一；位置变化另换代号" maxlength="80" required></label>
+          <label>安装高度（米，可留空）<input name="height_m" type="number" min="0.01" step="0.01"></label>
+          <label>朝向、覆盖范围与距离<input name="orientation" placeholder="例如正对房间，距动作区约2米" maxlength="200"></label>
+        </div>
+        <fieldset id="targeted-setup" class="targeted-setup" hidden>
+          <legend>专项采集计划</legend>
+          <div class="form-grid two">
+            <label>本场专项动作<select id="targeted-action" aria-describedby="targeted-plan-hint"></select></label>
+            <div class="repeat-field"><label for="targeted-count">每个角度的完整次数</label><div class="repeat-stepper"><button id="targeted-count-minus" type="button" aria-label="每角度次数减1">减1</button><input id="targeted-count" type="number" min="1" max="100" step="1" value="3"><button id="targeted-count-plus" type="button" aria-label="每角度次数加1">加1</button></div></div>
+          </div>
+          <p id="targeted-angle-title" class="hint">选择本场角度：0°面向、180°背向传感器，90°和270°为两侧；记录大致起始朝向。</p>
+          <div id="targeted-angles" class="angle-options" role="group" aria-labelledby="targeted-angle-title"></div>
+          <p id="targeted-plan-hint" class="hint" aria-live="polite"></p>
+        </fieldset>
+        <label class="radar-option"><input type="checkbox" id="radar-enabled" name="radar_enabled">同时采集真实雷达（只读）</label>
+        <p id="radar-config-note" class="hint">雷达可选；启用后与热像一同保存，串口异常会保留失败记录。</p>
+        <p id="profile-description" class="hint"></p>
+        <p id="activity-source-note" class="hint">真实热像与动作来源分别记录。位置、高度、朝向变化后请新建会话并更换安装配置代号；未知条件不要猜填。</p>
+        <label id="simulation-protocol-field" hidden>模拟方式与保护条件（按实际填写）<textarea name="simulation_protocol" id="simulation-protocol" rows="2" maxlength="2000" placeholder="说明下降方式、支撑/保护条件；不把缓慢受控模拟称为真实意外跌倒"></textarea></label>
+        <button id="targeted-protection-preset" type="button" hidden>按实填入：软垫＋现场协助保护</button>
+        <label>环境与采集备注<textarea name="note" rows="2" placeholder="静止热源、遮挡、安装位置等；无需真实姓名" maxlength="2000"></textarea></label>
+      </form>
+    </details>
+    <div class="capture-grid">
+      <section class="viewer" aria-label="实时热像">
+        <div class="viewer-top"><h3>实时温度矩阵</h3><span>32 × 24</span></div>
+        <section id="fall-test" class="fall-test" aria-label="实时跌倒检测测试" hidden>
+          <div class="fall-test-controls">
+            <button id="fall-test-toggle" type="button" disabled>开始跌倒测试</button>
+            <span id="fall-test-status" class="badge neutral" role="status">未启动</span>
+          </div>
+          <p id="fall-test-details" class="data-line">仅测试，候选结果在本页显示。</p>
+        </section>
+        <div class="heat-surface"><canvas id="live-canvas" width="640" height="480" aria-label="实时热像预览"></canvas><p id="live-empty" class="canvas-empty">尚未采集温度帧</p></div>
+        <div class="legend"><span class="scale-low">18 °C</span><span class="heat-scale" aria-hidden="true"></span><span class="scale-high">38 °C</span><span>灰色：无效像素</span></div>
+        <p id="live-quality" class="data-line">等待真实数据</p>
+        <p id="radar-live-details" class="data-line" role="status">雷达未启用</p>
+        <p id="live-pixel" class="hint">预览按原始像素显示，不补造空间细节。</p>
+        <p id="recording-order-note" class="hint"></p>
+      </section>
+      <section class="actions" aria-labelledby="action-heading">
+        <div class="viewer-top"><h3 id="action-heading">动作区间标记</h3><span id="radar-live-status" class="badge neutral">雷达未启用</span></div>
+        <div class="preview-controls"><button id="preview-start" type="button">仅预览，不保存</button><button id="preview-stop" type="button" disabled>关闭预览</button></div>
+        <p id="preview-note" class="hint">只调整视野时使用预览，无需填写采集信息，不生成数据集。</p>
+        <button id="capture-start" class="primary capture-start-button" type="submit" form="capture-form">开始采集</button>
+        <div id="targeted-live" hidden>
+          <p id="targeted-progress" class="data-line" role="status"></p>
+          <div class="targeted-angle-row"><label>当前人体起始朝向<select id="targeted-live-angle"></select></label><button id="targeted-next-angle" type="button">下一角度</button></div>
+        </div>
+        <label id="live-label-field"><span id="live-label-title">全部动作（按录制顺序 · 次数为本场计划）</span><select id="live-label" aria-describedby="label-plan recording-order-note targeted-stage-guide"></select></label>
+        <p id="targeted-phase-title" class="data-line" hidden></p>
+        <div class="live-main-controls"><div class="action-pair"><button id="label-start" class="primary" disabled>开始动作</button><button id="label-end" disabled>结束动作</button></div><button id="capture-stop" disabled>结束采集并保存</button><button id="capture-cancel" class="danger-outline" disabled>取消本次采集</button></div>
+        <div id="active-label" class="active-label" aria-live="polite">当前没有进行中的动作</div>
+        <p id="targeted-stage-guide" class="plan-hint" hidden aria-live="polite"></p>
+        <details id="targeted-conditions" class="targeted-conditions" hidden>
+          <summary>运动方向与可见性（选填）</summary>
+          <div class="form-grid"><label>本阶段运动方向<select id="targeted-motion"></select></label><label>人体轮廓<select id="targeted-visibility"></select></label></div>
+          <button id="targeted-reset" type="button" disabled>放弃本次周期，保留已录阶段</button>
+        </details>
+        <p id="label-plan" class="plan-hint" aria-live="polite"></p>
+        <p id="label-definition" class="hint"></p>
+        <div class="inline-note"><input id="capture-note" aria-label="现场备注" placeholder="误操作、设备移动、边界不确定等" maxlength="2000"><button id="note-add" disabled>记备注</button></div>
+        <p class="hint">按钮记录 K1 接收时刻，含人工与系统延迟。未结束的动作将按截断区间保留。关闭网页不会停止采集。</p>
+        <p id="capture-summary" class="data-line"></p>
+      </section>
+    </div>
+  </section>
+
+  <section id="replay-panel" role="tabpanel" aria-labelledby="tab-replay">
+    <div class="section-title"><h2>回放订正</h2><span class="badge neutral">原始记录只读</span></div>
+    <div class="session-filter"><label>采集日期<select id="session-date"><option value="">全部日期</option></select></label><p id="session-library-count" class="hint" aria-live="polite">正在读取数据集…</p></div>
+    <div class="session-picker"><label>数据集<select id="session-select"><option value="">正在读取列表…</option></select></label><button id="session-open">打开会话</button><button id="session-refresh">刷新列表</button><button id="session-delete" class="danger-outline" disabled>删除数据集</button></div>
+    <div class="dataset-name-row"><label>显示编号／名称（支持中文）<input id="dataset-display-name" maxlength="100" placeholder="选择数据集后可修改显示名称"></label><button id="dataset-rename" disabled>保存名称</button></div>
+    <details id="trash-panel" class="setup"><summary>回收区：恢复已删除或取消的数据集</summary><button id="trash-refresh" type="button">刷新回收区</button><p class="hint">删除和取消只移出当前列表，原始记录及标签修订保留，可恢复到原位置。仅预览不会在这里产生记录。</p><div id="trash-list"></div></details>
+    <p id="session-path" class="path-text"></p>
+    <details id="recovery-panel" class="setup" hidden>
+      <summary>检查异常中断的会话</summary>
+      <p class="hint">断电可能留下“采集中”的旧状态。只有确认原采集已停止后，才能建立只读中断视图；原文件不改写，未闭合动作不会自动补成完整标签。</p>
+      <label class="check-line"><input id="recovery-confirmed" type="checkbox">我已确认原采集程序停止，此目录不再写入数据</label>
+      <div class="form-grid two"><label>核对人代号<input id="recovery-reviewer" maxlength="80"></label><label>中断情况或检查原因<input id="recovery-reason" maxlength="2000"></label></div>
+      <button id="recovery-open">建立只读中断视图</button>
+    </details>
+    <p id="library-empty" class="empty-state" hidden>还没有找到采集记录。将完整会话目录复制到 data/raw，再刷新；也可通过 --data-root 指定现有目录。</p>
+    <div id="replay-work" hidden>
+      <div class="replay-grid">
+        <section class="viewer" aria-label="热像回放">
+          <div class="viewer-top"><h3>热像回放</h3><span id="frame-time">—</span></div>
+          <div class="heat-surface"><canvas id="replay-canvas" width="640" height="480" aria-label="选中帧的原始热像"></canvas><p id="replay-empty" class="canvas-empty" hidden>没有可回放的完整记录</p></div>
+        </section>
+        <section class="replay-controls" aria-label="回放控制和帧信息">
+          <div class="transport"><button id="frame-prev" aria-label="上一帧">上一帧</button><button id="play-toggle" class="primary">播放</button><button id="frame-next" aria-label="下一帧">下一帧</button></div>
+          <label class="speed">播放速度<select id="play-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+          <label class="slider-label">按时间定位（秒）<input id="frame-slider" type="range" min="0" max="0" value="0" step="0.01" disabled></label>
+          <div id="time-scale" class="time-scale" aria-hidden="true"><span>0 秒</span></div>
+          <div class="seek-row"><label>跳至（秒）<input id="seek-seconds" type="number" min="0" step="0.1" placeholder="输入秒数" disabled></label><button id="seek-go" type="button" disabled>定位</button></div>
+          <p class="hint">定位到最接近的已记录帧；显示的是相对会话开始的时间。</p>
+          <div class="legend"><span class="scale-low">18 °C</span><span class="heat-scale" aria-hidden="true"></span><span class="scale-high">38 °C</span><span>灰色：无效像素</span></div>
+          <p id="frame-quality" class="data-line"></p><p id="radar-replay-details" class="data-line">当前帧无雷达对照</p><p id="replay-pixel" class="hint">移动指针查看像素温度。</p>
+        </section>
+      </div>
+        <aside class="session-facts">
+          <h3>会话与数据质量</h3><dl id="session-facts"></dl>
+          <p class="hint">热图用于辅助核对。无法辨认的动作保留“不确定”，不能根据模型预测反改参考标签。</p>
+          <details><summary>现场备注</summary><ul id="session-notes" class="notes-list"></ul></details>
+          <details id="issue-details" hidden><summary>读取问题</summary><ul id="session-issues" class="notes-list"></ul></details>
+          <details class="analysis-details"><summary>数据质量检查</summary>
+            <p class="hint">只检查已保存的数据；结果不代表识别准确率或测温标定通过。</p>
+            <button id="quality-run" type="button">检查当前会话</button>
+            <dl id="quality-facts"></dl><ul id="quality-issues" class="notes-list"></ul>
+          </details>
+          <details class="analysis-details"><summary>温区特征预研</summary>
+            <p class="hint">按本帧中位温度加温差提取温区。它可能来自其他热源，不用于证明有人或跌倒。</p>
+            <label>探索温差 / °C<input id="feature-delta" type="number" value="2" min="0.1" max="50" step="0.1"></label>
+            <button id="features-run" type="button">分析当前帧</button>
+            <p id="features-result" class="data-line" role="status"></p>
+          </details>
+          <details class="analysis-details"><summary>时序融合候选（实验）</summary>
+            <p class="hint">分析连续温区形状与同场雷达证据，仅提出语音核查候选，不判定真实跌倒、不修改标签或发出告警。</p>
+            <button id="fusion-run" type="button">分析已保存会话</button>
+            <p id="fusion-result" class="data-line" role="status"></p>
+          </details>
+        </aside>
+      <section class="timeline-area" aria-label="时间轴">
+        <h3>时间轴 <span class="hint">上：帧质量　下：动作区间；点击可定位</span></h3>
+        <canvas id="timeline" width="1000" height="100" aria-label="帧质量和动作标注时间轴"></canvas>
+        <p class="hint">绿色：有效帧；灰色：预热或无效帧；红色：读取错误。空白动作区间保持未标注。</p>
+      </section>
+      <div class="review-grid">
+        <section class="label-list-area">
+          <div class="viewer-top"><h3>动作区间 <span id="label-count"></span></h3><div><button id="label-new">新增区间</button><button id="label-undo" disabled>撤销上次修改</button></div></div>
+          <div class="table-scroll"><table><thead><tr><th>动作</th><th>开始 / 秒</th><th>结束 / 秒</th><th>状态</th><th>操作</th></tr></thead><tbody id="labels-body"></tbody></table></div>
+          <p id="labels-empty" class="hint">本次采集没有动作标签；设备稳定性记录不等于动作数据集。</p>
+        </section>
+        <form id="edit-form" class="edit-form">
+          <h3 id="edit-heading">编辑区间</h3><p class="hint">点击左侧动作后，在此修改。</p>
+          <p id="edit-action-name" class="edit-action-name">请点击左侧动作区间</p><label id="edit-label-picker" hidden>新增区间的动作<select id="edit-label" required></select></label>
+          <div class="time-fields">
+            <label>开始 / 秒<input id="edit-start" type="text" inputmode="decimal" placeholder="例如 10.5" required><button id="set-start" type="button">用本帧读取开始</button></label>
+            <label>结束 / 秒<input id="edit-end" type="text" inputmode="decimal" placeholder="例如 18.2" required><button id="set-end" type="button">用本帧读取结束</button></label>
+          </div>
+          <label>边界不确定性 / 毫秒（可留空）<input id="edit-uncertainty" type="number" min="0" step="1" placeholder="不知道时留空，不代表精确为零"></label>
+          <label>本区间备注<textarea id="edit-note" rows="2" maxlength="2000" placeholder="修正依据、遮挡、无法确认的边界等"></textarea></label>
+          <div class="action-pair"><button type="submit" class="primary">应用区间修改</button><button id="label-delete" type="button" class="danger-outline">删除该区间</button></div>
+          <p id="edit-status" class="hint" role="status" aria-live="polite">区间修改先进入待保存列表，之后统一保存修订。</p>
+        </form>
+      </div>
+      <section class="save-area">
+        <h3>保存本次核对</h3>
+        <div class="form-grid two"><label>标注员代号（选填）<input id="reviewer" maxlength="80" placeholder="可留空，例如 a01"></label><label>修改或核对说明（选填）<input id="review-reason" maxlength="2000" placeholder="可留空，例如修正行走起点"></label></div>
+        <input id="review-confirmed" type="checkbox" hidden>
+        <div class="save-buttons"><button id="review-save" class="primary">另存标签修订</button><button id="discard-changes">放弃未保存修改</button><button id="review-download" hidden>下载本次修订 ZIP</button><span id="dirty-status" class="hint">尚无未保存修改</span></div>
+        <p id="review-result" class="path-text"></p>
+        <p class="hint">原始温度和原始标签保持不变；每次保存创建独立修订。</p>
+      </section>
+    </div>
+  </section>
+  <section id="events-panel" role="tabpanel" aria-labelledby="tab-events" hidden>
+    <div class="section-title"><h2>家属端事件预览</h2><span class="badge neutral">历史离线演练</span></div>
+    <p>查看语音链路保存的事件原因和告警状态，演练“看到事件→确认→人工核查→结束”。</p>
+    <p class="hint">未连接实时设备或通知服务。演练按钮只改变临时演练状态，不解除板端告警；本服务退出后演练状态清空。</p>
+    <button id="events-refresh" type="button">读取历史事件</button>
+    <p id="events-empty" class="empty-state" hidden>没有可预览的事实事件。启动时可用 --voice-record 指定已有语音状态快照；不会生成虚构的报警记录。</p>
+    <ul id="events-issues" class="notes-list"></ul>
+    <div id="events-work" class="events-grid" hidden>
+      <section aria-label="历史语音事件"><h3>已记录事件</h3><div id="events-list" class="events-list"></div></section>
+      <section class="session-facts" aria-labelledby="event-detail-heading">
+        <h3 id="event-detail-heading">事件详情与演练</h3><dl id="event-facts"></dl>
+        <p id="event-reason"></p><p id="event-transcript" class="hint"></p>
+        <div class="event-form"><label>演练操作者代号<input id="event-operator" maxlength="80" placeholder="例如 operator01"></label>
+          <label>演练说明<textarea id="event-note" maxlength="2000" rows="2" placeholder="记录演练中的人工核查步骤；不填写真实个人身份信息"></textarea></label>
+          <label class="check-line"><input id="event-human-checked" type="checkbox">已完成本次模拟人工核查（仅演练）</label>
+          <div class="action-pair"><button id="event-ack" type="button">确认演练</button><button id="event-close" type="button">结束演练</button></div>
+          <p id="event-feedback" class="hint" role="status"></p>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+<footer>采集记录与参考标签工具 · 不提供跌倒诊断或自动告警结论</footer>
+</body>
+</html>

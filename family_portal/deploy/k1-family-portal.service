@@ -1,0 +1,19 @@
+[Unit]
+Description=K1 family portal loopback business API
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/family_portal/backend
+ExecStart=%h/venv-k1-family/bin/python -B -m portal.cli --db %h/family_portal/data/family.db serve --host 127.0.0.1 --port 8794 --allow-live-ingest
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=10
+KillMode=mixed
+NoNewPrivileges=true
+UMask=0077
+
+[Install]
+WantedBy=default.target

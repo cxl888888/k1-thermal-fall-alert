@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "default_backend": "llamacpp",
+  "selected_variant": "q8_ngram",
+  "native_build": "~/k1_performance_candidates/q8_ime1_upstream_9f12cd4",
+  "native_commit": "9f12cd4a4c52ea351b85cf78939db8991e1bc025",
+  "native_arguments": [
+    "-t",
+    "4",
+    "-tb",
+    "4",
+    "-c",
+    "1024",
+    "-np",
+    "1",
+    "--repeat-penalty",
+    "1.1",
+    "--repeat-last-n",
+    "64",
+    "--chat-template",
+    "chatml",
+    "--no-webui",
+    "--load-mode",
+    "none",
+    "--metrics"
+  ],
+  "silence_ms": 800,
+  "variants": {
+    "q8_0": {
+      "path": "~/k1_voice_candidate_v2/models/k1-safety-v2-q8_0.gguf",
+      "sha256": "09584039233fb2e3227edf3333735ad6875709fca6609ffacd66eb6a692680d5",
+      "bytes": 531065056,
+      "port": 11436,
+      "format": "Q8_0"
+    },
+    "q4_k_m": {
+      "path": "~/k1_performance_candidates/model_variants/k1-safety-v2-q4_k_m.gguf",
+      "sha256": "7266b6361307de9a2de6639d40fe0de961505e57d035214c542435374a595329",
+      "bytes": 397804768,
+      "port": 11437,
+      "format": "Q4_K_M mixed tensors"
+    },
+    "q8_ngram": {
+      "path": "~/k1_voice_candidate_v2/models/k1-safety-v2-q8_0.gguf",
+      "sha256": "09584039233fb2e3227edf3333735ad6875709fca6609ffacd66eb6a692680d5",
+      "bytes": 531065056,
+      "port": 11439,
+      "format": "Q8_0 with ngram-simple candidate",
+      "extra_arguments": [
+        "--spec-type",
+        "ngram-simple",
+        "--spec-ngram-simple-size-n",
+        "3",
+        "--spec-ngram-simple-size-m",
+        "8",
+        "--spec-draft-n-max",
+        "8"
+      ]
+    },
+    "f16": {
+      "path": "~/k1_performance_candidates/model_variants/k1-safety-v2-f16.gguf",
+      "sha256": "ff2b3ad5bddf603212f79b493b28ef740ad28a5f078ce5e203f11f2a68657967",
+      "bytes": 994153696,
+      "port": 11438,
+      "format": "F16"
+    }
+  }
+}

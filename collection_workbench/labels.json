@@ -1,0 +1,411 @@
+{
+  "version": "thermal_actions_0.2",
+  "recording_plan_version": "continuous_in_zone_0.1",
+  "recording_plan_basis": "动作、参考次数及时长沿用现有指导书；顺序按一次进入、区域内完成动作、最后离开的场内连续采集方式改编，不修改原指导书。",
+  "recording_plan": [
+    {
+      "id": "empty",
+      "order": 1,
+      "stage": "首尾空场景（同一标签重复使用）",
+      "count": "首尾各1段",
+      "duration": "2分钟 / 1–2分钟",
+      "description": "开始空场景约2分钟；结束时再次选择，记录1–2分钟。现场确认无人，用备注区分首尾阶段；预热帧仍由采集器单独标记。"
+    },
+    {
+      "id": "enter_zone",
+      "order": 2,
+      "stage": "进入区域→站立静止",
+      "count": "通常1次",
+      "duration": "自然完成",
+      "description": "从已记录的监测边界外进入；进入后先站立静止，再在区域内完成后续动作。中途若确实离开并重新进入，额外区间按实标记，不补造次数。"
+    },
+    {
+      "id": "stand_still",
+      "order": 3,
+      "stage": "进入区域→站立静止",
+      "count": "2次",
+      "duration": "每次30–45秒",
+      "description": "先完成进入区域，再在固定位置自然站立；每次单独开始、结束，可在区域内休息或换位后记录第二次，无需为了本动作重新进出。"
+    },
+    {
+      "id": "walk",
+      "order": 4,
+      "stage": "区域内行走与转身（按实际交替）",
+      "count": "4次",
+      "duration": "每次按路线完成",
+      "description": "在监测区域内完成近到远2趟、远到近2趟，每趟分别标记；转身可穿插其间并单独标记。随后继续坐姿等动作，不在此阶段提前离开区域。"
+    },
+    {
+      "id": "turn",
+      "order": 5,
+      "stage": "区域内行走与转身（按实际交替）",
+      "count": "2次",
+      "duration": "自然完成",
+      "description": "可穿插在行走之间记录2次原地转身；开始改变朝向到新朝向稳定为一个区间。行走与转身按实际交替，不把整趟行走标成转身。"
+    },
+    {
+      "id": "sit_down",
+      "order": 6,
+      "stage": "坐下→静坐→起身，循环3轮",
+      "count": "3次",
+      "duration": "自然完成",
+      "description": "每轮先坐下，再切换静坐，最后切换起身；完成整个周期后再开始下一轮。"
+    },
+    {
+      "id": "sit_still",
+      "order": 7,
+      "stage": "坐下→静坐→起身，循环3轮",
+      "count": "3段",
+      "duration": "每段约30秒",
+      "description": "每轮坐稳后标记静坐约30秒；开始起身时结束本区间并切换起身标签。"
+    },
+    {
+      "id": "stand_up",
+      "order": 8,
+      "stage": "坐下→静坐→起身，循环3轮",
+      "count": "3次",
+      "duration": "自然完成",
+      "description": "每轮静坐后自然起身，站稳后结束；与坐下、静坐组成一个完整周期。"
+    },
+    {
+      "id": "bend",
+      "order": 9,
+      "stage": "弯腰与半蹲",
+      "count": "2次",
+      "duration": "每次自然完成",
+      "description": "每次从弯腰开始，到恢复稳定姿势结束；记录是否扶桌或拿取物品。"
+    },
+    {
+      "id": "squat",
+      "order": 10,
+      "stage": "弯腰与半蹲",
+      "count": "2次",
+      "duration": "每次自然完成",
+      "description": "按脚本做半蹲，每次回到稳定姿势后再开始下一次；记录实际动作，不作为跌倒。"
+    },
+    {
+      "id": "lie_down_normal",
+      "order": 11,
+      "stage": "主动躺下→躺卧→恢复，循环2轮",
+      "count": "2次",
+      "duration": "缓慢受控完成",
+      "description": "在软垫上从安全、稳定的坐姿或跪姿主动躺下；躺稳后切换正常躺卧，不标成模拟跌倒。"
+    },
+    {
+      "id": "lie_still_normal",
+      "order": 12,
+      "stage": "主动躺下→躺卧→恢复，循环2轮",
+      "count": "2段",
+      "duration": "分别15秒、30秒",
+      "description": "第一轮保持15秒，第二轮保持30秒；每轮保持结束后按提示慢慢恢复。"
+    },
+    {
+      "id": "recover_normal",
+      "order": 13,
+      "stage": "主动躺下→躺卧→恢复，循环2轮",
+      "count": "2次",
+      "duration": "按提示慢慢恢复",
+      "description": "正常躺卧保持结束后再恢复姿态；恢复稳定后结束，每轮各记录一次。"
+    },
+    {
+      "id": "safe_fall_simulation",
+      "order": 14,
+      "stage": "受控模拟→低位保持→恢复，循环3轮",
+      "count": "3次",
+      "duration": "受控完成，不计固定秒数",
+      "description": "仅在具备安全条件时做受控低位下降，每轮先稳定约5秒；不做站立自由摔倒，不具备条件可跳过。"
+    },
+    {
+      "id": "post_fall_immobile",
+      "order": 15,
+      "stage": "受控模拟→低位保持→恢复，循环3轮",
+      "count": "3段",
+      "duration": "分别5秒、15秒、30秒",
+      "description": "每轮下降后切换此标签，依次保持5、15、30秒；仅代表模拟后低姿态静止，不代表真实失能。"
+    },
+    {
+      "id": "recover_after_fall",
+      "order": 16,
+      "stage": "受控模拟→低位保持→恢复，循环3轮",
+      "count": "3次",
+      "duration": "慢慢恢复；轮间休息1–2分钟",
+      "description": "保持结束并收到提示后慢慢恢复，稳定后结束；每轮之间休息，不为赶次数缩短休息。"
+    },
+    {
+      "id": "exit_zone",
+      "order": 17,
+      "stage": "全部场内动作结束后离开",
+      "count": "通常1次",
+      "duration": "自然完成",
+      "description": "完成坐姿周期、弯腰、半蹲和选做动作后，再标记从监测区域内离开的过程；离开后重新选择空场景标签记录收尾。中途离开按实际另标。"
+    },
+    {
+      "id": "occlusion",
+      "order": 18,
+      "stage": "质量与异常：随时按需选择",
+      "count": "按实际",
+      "duration": "按实际区间",
+      "description": "存在影响判断的遮挡时记录，不能把遮挡期间视为无人；不要求为了凑次数制造遮挡。"
+    },
+    {
+      "id": "unknown",
+      "order": 19,
+      "stage": "质量与异常：随时按需选择",
+      "count": "按实际",
+      "duration": "按实际区间",
+      "description": "依据不足以确认动作时使用，不猜动作、不补正常标签。"
+    },
+    {
+      "id": "invalid",
+      "order": 20,
+      "stage": "质量与异常：随时按需选择",
+      "count": "按实际",
+      "duration": "按实际区间",
+      "description": "设备移动、读取故障等影响数据可用性时使用，并写明原因；不要求固定次数。"
+    }
+  ],
+  "labels": [
+    {
+      "id": "empty",
+      "name": "空场景",
+      "group": "常用",
+      "definition": "现场确认监测区域内无人；热像未显示热区本身不能证明无人。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "stand_still",
+      "name": "站立静止",
+      "group": "常用",
+      "definition": "站姿已稳定至开始移动或改变姿态；自然呼吸和轻微晃动可保留。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "walk",
+      "name": "行走",
+      "group": "常用",
+      "definition": "开始连续迈步至停止迈步；进入、离开和转身可另标。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "sit_down",
+      "name": "坐下过程",
+      "group": "常用",
+      "definition": "开始由站姿下降至坐姿稳定；边界无法辨认时注明不确定性。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "sit_still",
+      "name": "坐姿静止",
+      "group": "常用",
+      "definition": "坐姿已稳定至再次移动或起身。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "stand_up",
+      "name": "起身过程",
+      "group": "常用",
+      "definition": "开始离开坐姿至站姿稳定。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "turn",
+      "name": "转身",
+      "group": "其他",
+      "definition": "身体开始改变朝向至新朝向稳定。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "enter_zone",
+      "name": "进入区域",
+      "group": "其他",
+      "definition": "从区域外进入事先记录的监测区域。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "exit_zone",
+      "name": "离开区域",
+      "group": "其他",
+      "definition": "从监测区域内离开至区域外。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "bend",
+      "name": "弯腰",
+      "group": "其他",
+      "definition": "开始弯腰至回到原姿态；可按任务需要拆分，必须记录口径。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "squat",
+      "name": "蹲下",
+      "group": "其他",
+      "definition": "开始下蹲至回到原姿态；不等同于跌倒。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "lie_down_normal",
+      "name": "主动躺下",
+      "group": "其他",
+      "definition": "有意躺下的姿态变化，不作为真实跌倒标签。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "lie_still_normal",
+      "name": "正常躺卧",
+      "group": "其他",
+      "definition": "主动躺下后稳定躺卧。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "recover_normal",
+      "name": "正常躺卧后起身",
+      "group": "其他",
+      "definition": "从主动躺卧状态起身。",
+      "activity_provenance": "everyday_action"
+    },
+    {
+      "id": "safe_fall_simulation",
+      "name": "模拟跌倒（受控）",
+      "group": "模拟事件",
+      "definition": "有保护的受控模拟；仅代表模拟事件，不能标为真实意外跌倒。",
+      "activity_provenance": "controlled_simulation"
+    },
+    {
+      "id": "post_fall_immobile",
+      "name": "模拟后低姿态静止",
+      "group": "模拟事件",
+      "definition": "受控模拟之后保持低姿态；不能据此声称真实失能。",
+      "activity_provenance": "controlled_simulation"
+    },
+    {
+      "id": "recover_after_fall",
+      "name": "模拟事件后恢复",
+      "group": "模拟事件",
+      "definition": "受控模拟之后恢复姿态。",
+      "activity_provenance": "controlled_simulation"
+    },
+    {
+      "id": "occlusion",
+      "name": "遮挡",
+      "group": "质量",
+      "definition": "目标被遮挡影响判断；不能把遮挡期间视为无人。",
+      "activity_provenance": "quality_or_unknown"
+    },
+    {
+      "id": "unknown",
+      "name": "动作不确定",
+      "group": "质量",
+      "definition": "数据存在，但依据不足以确定真实动作。",
+      "activity_provenance": "quality_or_unknown"
+    },
+    {
+      "id": "invalid",
+      "name": "数据无效",
+      "group": "质量",
+      "definition": "设备移动、采集故障等使该段不适用；在备注中写明原因。",
+      "activity_provenance": "quality_or_unknown"
+    }
+  ],
+  "default_recording_profile": "preliminary",
+  "collection_context_version": "collection_context_0.2",
+  "recording_profiles": [
+    {
+      "id": "preliminary",
+      "version": "preliminary_0.2",
+      "name": "初赛简化计划",
+      "label_ids": [
+        "empty",
+        "enter_zone",
+        "stand_still",
+        "walk",
+        "turn",
+        "sit_down",
+        "sit_still",
+        "stand_up",
+        "bend",
+        "squat",
+        "safe_fall_simulation",
+        "post_fall_immobile",
+        "recover_after_fall",
+        "exit_zone",
+        "occlusion",
+        "unknown",
+        "invalid"
+      ],
+      "description": "一次进入后在区域内完成日常动作，最后离开；正常躺卧三项暂缓，受控模拟为可选。每种动作单独标记，换位与休息可留空。",
+      "order_note": "空场景→进入→站立→行走/转身→坐下/静坐/起身→弯腰→半蹲→选做受控模拟→离开→空场景。坐姿周期循环3轮；换位与休息可留空，离开后再次选择首项空场景。中途如有额外进出，按实际另标。",
+      "coverage_limits": [
+        "未覆盖正常主动躺卧，不能评估这类动作的误触发",
+        "受控模拟不等于真实意外跌倒",
+        "未采集同步真实雷达，不评估融合效果"
+      ]
+    },
+    {
+      "id": "full_guide",
+      "version": "full_in_zone_0.1",
+      "name": "完整参考计划",
+      "label_ids": [
+        "empty",
+        "enter_zone",
+        "stand_still",
+        "walk",
+        "turn",
+        "sit_down",
+        "sit_still",
+        "stand_up",
+        "bend",
+        "squat",
+        "lie_down_normal",
+        "lie_still_normal",
+        "recover_normal",
+        "safe_fall_simulation",
+        "post_fall_immobile",
+        "recover_after_fall",
+        "exit_zone",
+        "occlusion",
+        "unknown",
+        "invalid"
+      ],
+      "description": "参考原指导书的动作、次数与时长，按一次进入、场内完成、最后离开重排；完整计划的躺卧与受控模拟需具备相应条件。",
+      "order_note": "空场景→进入→站立→行走/转身→坐姿周期→弯腰→半蹲→选做正常躺卧/受控模拟→离开→空场景。坐姿周期3轮，正常躺卧周期2轮；按实际逐段开始/结束，允许休息，开始前设置足够采集时长。",
+      "coverage_limits": [
+        "受控模拟不等于真实意外跌倒",
+        "未采集同步真实雷达，不评估融合效果"
+      ]
+    },
+    {
+      "id": "targeted",
+      "version": "targeted_collection_0.1",
+      "name": "专项动作采集",
+      "label_ids": [
+        "empty",
+        "stand_still",
+        "walk",
+        "sit_down",
+        "sit_still",
+        "stand_up",
+        "turn",
+        "enter_zone",
+        "exit_zone",
+        "bend",
+        "squat",
+        "lie_down_normal",
+        "lie_still_normal",
+        "recover_normal",
+        "safe_fall_simulation",
+        "post_fall_immobile",
+        "recover_after_fall",
+        "occlusion",
+        "unknown",
+        "invalid"
+      ],
+      "description": "一次会话集中采一种动作系列；每个选定角度重复自定义次数。计次依据手动完成的周期，不代表动作已审核。",
+      "order_note": "选择专项动作、角度和每角度次数→开始采集→逐阶段标记完整周期→按实际切换角度继续。角度是人体起始朝向，运动方向另记；计划次数不是完成要求，随时可以结束保存。",
+      "coverage_limits": [
+        "受控模拟不等于真实意外跌倒",
+        "同一周期内的多个阶段不计为多次独立事件",
+        "未标注或质量不足片段不自动作为正常样本"
+      ]
+    }
+  ]
+}

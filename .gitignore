@@ -1,0 +1,17 @@
+**/__pycache__/
+**/node_modules/
+**/dist/
+**/.venv/
+/.vscode/
+**/runtime/
+**/.env
+**/.env.*
+**/*.db
+**/*.sqlite*
+**/*.pem
+**/*.key
+**/*.gguf
+**/*.onnx
+family_portal/data/
+collection_workbench/data/
+voice_runtime/engine/models/

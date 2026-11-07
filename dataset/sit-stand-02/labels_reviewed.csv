@@ -1,0 +1,16 @@
+label_id,label,start_s,end_s
+sit-stand-02-sit-down-01,sit_down,20.118316913,23.668538329
+sit-stand-02-sit-still-01,sit_still,24.190655368,52.690206011
+sit-stand-02-stand-up-01,stand_up,53.203673493,56.755933067
+sit-stand-02-sit-down-02,sit_down,73.06428351,76.619287886
+sit-stand-02-sit-still-02,sit_still,79.628251296,101.571813177
+sit-stand-02-stand-up-02,stand_up,102.110115294,105.639909168
+sit-stand-02-sit-down-03,sit_down,115.840347897,118.871227087
+sit-stand-02-sit-still-03,sit_still,119.396828397,145.358799929
+sit-stand-02-stand-up-03,stand_up,146.335284813,149.930375118
+sit-stand-02-sit-down-04,sit_down,162.669834817,165.717237874
+sit-stand-02-sit-still-04,sit_still,167.252371281,194.74073798
+sit-stand-02-stand-up-04,stand_up,194.750635348,198.302069224
+sit-stand-02-sit-down-05,sit_down,210.027441798,213.072837439
+sit-stand-02-sit-still-05,sit_still,213.58658457,240.573844758
+sit-stand-02-stand-up-05,stand_up,241.087297984,245.150067969

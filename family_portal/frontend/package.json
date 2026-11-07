@@ -1,0 +1,26 @@
+{
+  "name": "k1-family-portal",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5178 --strictPort",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5178 --strictPort"
+  },
+  "dependencies": {
+    "@lucide/vue": "1.62.0",
+    "pinia": "4.1.0",
+    "vue": "3.5.44",
+    "vue-router": "5.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "6.0.10",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "vue-tsc": "3.3.13"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}
